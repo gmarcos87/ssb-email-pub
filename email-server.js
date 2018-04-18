@@ -8,6 +8,7 @@ ssbClient(function (err, sbot) {
     ssb = sbot;
     sbot.whoami((err,info)=>{
         ssbId = info.id
+        console.log('SSB', info)
     })
 })
 

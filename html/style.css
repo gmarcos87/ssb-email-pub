@@ -1,0 +1,100 @@
+body {
+    margin: 0 auto;
+    padding: 0 auto;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #ffffff;
+    background: #2C3E50;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #4CA1AF, #2C3E50);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #4CA1AF, #2C3E50); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.form {
+    margin: 31vh auto 0;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    max-width: 500px;
+    min-width: 250px;
+}
+
+.form h1 {
+    font-weight: normal;
+    font-size: 40px;
+    margin: 0 10px;
+}
+.form h1 span {
+    float: right;
+    display: block;
+    padding-top:15px;
+    font-size: 15px;
+}
+.form input {
+    border: 1px solid #ffffff;
+    background: rgba(255,255,255,0.2);
+    color: #ffffff;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #fff;
+    opacity: 0.5; /* Firefox */
+}
+
+.form input:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.form #actions {
+    display: flex;
+    flex-direction: row;
+}
+.form button {
+    text-transform: uppercase;
+    width: 50%;
+    margin: 10px;
+    padding: 10px;
+    color: rgba(255,255,255,.7);
+    background-color: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.2);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: .3rem;
+    transition: color .2s,background-color .2s,border-color .2s;
+    cursor: pointer;
+}
+.form button:hover {
+    color: rgba(255,255,255,.8);
+    background-color: rgba(255,255,255,.2);
+    border-color: rgba(255,255,255,.3);
+}
+
+
+.show {
+    display: block
+}
+
+.hide {
+    display: none
+}
+
+#message {
+    text-align: center;
+    padding: 10px;
+
+}
+
+.alertBox {
+    position: absolute;
+    z-index: 99999;
+    top: calc(50vh - 50px);
+    padding: 40px;
+    width: 200px;
+    background: #fff;
+    box-shadow: 0 0 165px 57px #2C3E50;
+    border-radius: 15px;
+    width: 200px;
+    left: calc(50% - 140px);
+    color: #333;
+    font-size: 20px;
+    text-align: center;
+}

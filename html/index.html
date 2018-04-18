@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Link yout ssb account to a email address">
+    <title>emailPub</title>
+    <link rel="stylesheet" href=style.css />
+</head>
+<body>
+
+    <div class="form">
+        <h1>email<b>Pub</b><span id="alert">Proof of concept</span></h1>
+        <input id="ssbId" placeholder="Ssb @id" />
+        <input id="username" placeholder="Username"/>
+        <div id="actions">
+            <button class="btn" onClick='callApi("link")'>Link</button>
+            <button class="btn" onClick='callApi("unlink")'>Unlink</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <div id="linked" class="aletBox hide">
+        Your account is linked!
+    </div>
+    <div id="unlinked" class="alertBox hide">
+        :( bye bye!
+    </div>
+    <script>
+
+        let block = false;
+
+        function toggleElement(element) {
+            element.className = (element.className.indexOf('show') !== -1 )? 'alertBox hide': 'alertBox show';
+        }
+
+        const hash = window.location.hash.substr(1);
+        let e = document.getElementById(hash);
+        if (e) { toggleElement(e) }
+
+
+        function getData() {
+            return {
+                ssbId: document.getElementById('ssbId').value,
+                username: document.getElementById('username').value
+            }
+        }
+
+        function sendForm(data) {
+            return fetch("api/"+data.action, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+
+        }
+
+        function callApi(action) {
+            if (block) return;
+            toggleActions()
+            showMsg()
+            sendForm({ ...getData(), action })
+                .then(function(res){
+                  return res.json()  
+                })
+                .then(function(json) {
+                    console.log(json)
+                    if (json.status === 'error') {
+                        toggleActions()
+                        showMsg(json.message)
+                        return
+                    }
+                    showMsg('Activation link sent by private message')
+                })
+                .catch(function(res){ 
+                    console.log(res) 
+                    toggleActions()
+                })
+        }
+
+        function showMsg(message) {
+            document.getElementById('message').innerHTML = message || '';
+        }
+        
+        function toggleActions () {
+            block = !block;
+        }
+
+        let alert = document.getElementById('alert');
+        alert.status = false;
+        setInterval(()=>{
+            alert.innerHTML = (alert.status)? 'Proof of concept': 'No warranty';
+            alert.status = !alert.status;
+        }, 1000)
+
+    </script>
+</body>
+</html>

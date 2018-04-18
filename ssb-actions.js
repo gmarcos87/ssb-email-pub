@@ -1,22 +1,16 @@
-const ssbClient = require('ssb-client')
 const uuid = require('uuid/v1')
 const config = require('./config')
 
-var ssb = {
-    private: {
-        publish: function(data, ids, cb) {
-            ssbClient(function (err, sbot) {
-                sbot.whoami((err, data) => {
-                    sbot.private.publish(data,[ids].concat([data.id]),cb)
-                })
-            })            
-        }
-    }
-}
-
-
-module.exports = {
-    sendLink: (ssbId, username, db) => {
+let actions = {
+    actions: null,
+    ssbId: null,
+    setSsb: function(ssb) {
+        actions.ssb = ssb
+        ssb.whoami((err, info) => {
+            actions.ssbId = info.id
+        })
+    },
+    sendLink: function (ssbId, username, db) {
         //generate random hash  
         const hash = uuid()
         //save in db
@@ -24,12 +18,12 @@ module.exports = {
             //send ssb private message
             if (err) return console.log('Error saving hash', err)
             const message = `Confirm your new email address: ${username}@${config.domain} - ${config.url}/action/link/${hash}`
-            ssb.private.publish({ type: 'post', text: message }, [ssbId], console.log)
+            actions.ssb.private.publish({ type: 'post', text: message }, [actions.ssbId, ssbId], console.log)
         })
     },
-    removeLink: (ssbId, username, db) => {
+    removeLink: function (ssbId, username, db) {
         //find username
-        db.get(username, (err, data) => {
+        db.get(username, function(err, data) {
             if (err) return console.log('Error load hash', err)
             data = JSON.parse(data)
             if (data.ssbId === ssbId){
@@ -40,7 +34,7 @@ module.exports = {
                     //send ssb private message
                     if (err) return console.log('Error saving hash', err)
                     const message = `Confirm your unlink: ${config.url}/action/unlink/${hash}`
-                    ssb.private.publish({ type: 'post', text: message }, [ssbId], console.log)
+                    actions.ssb.private.publish({ type: 'post', text: message }, [actions.ssbId, ssbId], console.log)
                     return
                 })
             }
@@ -48,6 +42,8 @@ module.exports = {
         })
     },
     toPrivateMessage: (message, cb) => {
-        ssb.private.publish({ type: 'post', text: message.text, email: message.email }, [message.id], cb)
+        actions.ssb.private.publish({ type: 'post', text: message.text, email: message.email }, [actions.ssbId, message.id], cb)
     }
 }
+
+module.exports = actions;

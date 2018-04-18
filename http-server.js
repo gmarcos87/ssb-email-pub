@@ -24,7 +24,7 @@ app.post('/api/link', jsonParser, (req, res) => {
                 res.json(result[0])
             }
         } else {
-            res.json({stauts: 'error', message: 'Username already taken'})
+            res.json({status: 'error', message: 'Username already taken'})
         }
     }).catch(err => {
         res.json(err)
@@ -45,7 +45,7 @@ app.post('/api/unlink',jsonParser, (req, res) => {
                 res.json(result[0])
             }
         } else {
-            res.json({stauts: 'error', message: 'Username not found'})
+            res.json({status: 'error', message: 'Username not found'})
         }
     }).catch(err => {
         res.json(err)

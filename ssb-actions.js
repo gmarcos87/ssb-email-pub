@@ -2,15 +2,18 @@ const ssbClient = require('ssb-client')
 const uuid = require('uuid/v1')
 const config = require('./config')
 
-var ssb = null
-var mySsbId = null
-ssbClient(function (err, sbot) {
-    ssb = sbot;
-    sbot.whoami((err,info)=>{
-        ssbId = info.id
-        console.log('SSB', info)
-    })
-})
+var ssb = {
+    private: {
+        publish: function(data, ids, cb) {
+            ssbClient(function (err, sbot) {
+                sbot.whoami((err, data) => {
+                    sbot.private.publish(data,[ids].concat([data.id]),cb)
+                })
+            })            
+        }
+    }
+}
+
 
 module.exports = {
     sendLink: (ssbId, username, db) => {
@@ -21,7 +24,7 @@ module.exports = {
             //send ssb private message
             if (err) return console.log('Error saving hash', err)
             const message = `Confirm your new email address: ${username}@${config.domain} - ${config.url}/action/link/${hash}`
-            ssb.private.publish({ type: 'post', text: message }, [mySsbId, ssbId], console.log)
+            ssb.private.publish({ type: 'post', text: message }, [ssbId], console.log)
         })
     },
     removeLink: (ssbId, username, db) => {
@@ -37,7 +40,7 @@ module.exports = {
                     //send ssb private message
                     if (err) return console.log('Error saving hash', err)
                     const message = `Confirm your unlink: ${config.url}/action/unlink/${hash}`
-                    ssb.private.publish({ type: 'post', text: message }, [mySsbId, ssbId], console.log)
+                    ssb.private.publish({ type: 'post', text: message }, [ssbId], console.log)
                     return
                 })
             }
@@ -45,6 +48,6 @@ module.exports = {
         })
     },
     toPrivateMessage: (message, cb) => {
-        ssb.private.publish({ type: 'post', text: message.text, email: message.email }, [mySsbId, message.id], cb)
+        ssb.private.publish({ type: 'post', text: message.text, email: message.email }, [message.id], cb)
     }
 }

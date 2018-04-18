@@ -13,7 +13,7 @@ ssbClient(function (err, sbot) {
 })
 
 module.exports = {
-    sendLink: function (ssbId, username, db) {
+    sendLink: (ssbId, username, db) => {
         //generate random hash  
         const hash = uuid()
         //save in db
@@ -24,9 +24,9 @@ module.exports = {
             ssb.private.publish({ type: 'post', text: message }, [mySsbId, ssbId], console.log)
         })
     },
-    removeLink: function (ssbId, username, db) {
+    removeLink: (ssbId, username, db) => {
         //find username
-        db.get(username, function(err, data) {
+        db.get(username, (err, data) => {
             if (err) return console.log('Error load hash', err)
             data = JSON.parse(data)
             if (data.ssbId === ssbId){

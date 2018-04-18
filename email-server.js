@@ -1,21 +1,9 @@
 const db = require('./db')
 const mailin = require('mailin')
 const ssbClient = require('ssb-client')
+const toPrivateMessage = require('./ssb-actions').toPrivateMessage
 
-var ssb = null
-var ssbId = null
-ssbClient(function (err, sbot) {
-    ssb = sbot;
-    sbot.whoami((err,info)=>{
-        ssbId = info.id
-        console.log('SSB', info)
-    })
-})
 
-const toPrivateMessage = (message, sbot, cb) => {
-    console.log(message)
-    sbot.private.publish({ type: 'post', text: message.text, email: message.email }, [ssbId, message.id], cb)
-}
   
 
 const findSSBid = (address, db, cb) => {
@@ -41,7 +29,6 @@ mailin.on('message', function (connection, data, content) {
                 text: `### **From:** ${data.headers.from}\n### **Subject:** ${data.subject}\n### **Date:** ${new Date(data.date).toLocaleDateString()}\n------\n${data.text}`,
                 email: data.headers
             },
-            ssb,
             console.log
         );
     }

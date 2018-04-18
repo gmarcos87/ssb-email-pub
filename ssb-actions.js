@@ -2,12 +2,15 @@ const ssbClient = require('ssb-client')
 const uuid = require('uuid/v1')
 const config = require('./config')
 
-var sbot = null
-ssbClient(function (err, ssb) {
-    if (err) throw new Error('Error starting sbot')
-    sbot = ssb;
+var ssb = null
+var mySsbId = null
+ssbClient(function (err, sbot) {
+    ssb = sbot;
+    sbot.whoami((err,info)=>{
+        ssbId = info.id
+        console.log('SSB', info)
+    })
 })
-
 
 module.exports = {
     sendLink: function (ssbId, username, db) {
@@ -18,7 +21,7 @@ module.exports = {
             //send ssb private message
             if (err) return console.log('Error saving hash', err)
             const message = `Confirm your new email address: ${username}@${config.domain} - ${config.url}/action/link/${hash}`
-            sbot.private.publish({ type: 'post', text: message }, [ssbId], console.log)
+            ssb.private.publish({ type: 'post', text: message }, [mySsbId, ssbId], console.log)
         })
     },
     removeLink: function (ssbId, username, db) {
@@ -34,12 +37,14 @@ module.exports = {
                     //send ssb private message
                     if (err) return console.log('Error saving hash', err)
                     const message = `Confirm your unlink: ${config.url}/action/unlink/${hash}`
-                    sbot.private.publish({ type: 'post', text: message }, [ssbId], console.log)
+                    ssb.private.publish({ type: 'post', text: message }, [mySsbId, ssbId], console.log)
                     return
                 })
             }
             return console.log('Invalid data')
         })
-
+    },
+    toPrivateMessage: (message, cb) => {
+        ssb.private.publish({ type: 'post', text: message.text, email: message.email }, [mySsbId, message.id], cb)
     }
 }

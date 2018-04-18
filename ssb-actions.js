@@ -2,7 +2,7 @@ const ssbClient = require('ssb-client')
 const uuid = require('uuid/v1')
 const config = require('./config')
 
-var ssb = null
+var sbot = null
 ssbClient(function (err, ssb) {
     if (err) throw new Error('Error starting sbot')
     sbot = ssb;

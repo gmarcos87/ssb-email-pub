@@ -15,7 +15,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "level": "^3.0.0",
     "mailin": "^3.0.4",
     "scuttlebot": "^11.2.1",

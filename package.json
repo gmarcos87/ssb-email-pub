@@ -16,7 +16,7 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
-    "level": "^3.0.0",
+    "level": "^3.0.2",
     "mailin": "^3.0.4",
     "scuttlebot": "^11.2.1",
     "ssb-client": "^4.5.7",
